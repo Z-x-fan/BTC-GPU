@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33529.622
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tensor_GPU_2", "tensor_GPU_2\tensor_GPU_2.vcxproj", "{808E98E9-6021-40CE-A2D4-B548CECDCE71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{808E98E9-6021-40CE-A2D4-B548CECDCE71}.Debug|x64.ActiveCfg = Debug|x64
+		{808E98E9-6021-40CE-A2D4-B548CECDCE71}.Debug|x64.Build.0 = Debug|x64
+		{808E98E9-6021-40CE-A2D4-B548CECDCE71}.Release|x64.ActiveCfg = Release|x64
+		{808E98E9-6021-40CE-A2D4-B548CECDCE71}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8A626D84-5982-4E0B-B825-D35FD4367479}
+	EndGlobalSection
+EndGlobal
