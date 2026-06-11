@@ -26,7 +26,7 @@ data/<dataset>.test
 ## Run
 
 ```bash
-./tensor_sgd <dataset> <I> <J> <K> <data_dir> <coord_base> <output_dir> [options]
+./tensor_sgd <dataset> <I> <J> <K> <data_dir> <coord_base> <output_dir> 
 ```
 
 
