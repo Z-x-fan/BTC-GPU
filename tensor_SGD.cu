@@ -26,14 +26,14 @@ int J = 288;
 int K = 168;
 
 int epochs = 1000;
-int r = 4;
-double lr = 0.001;   //LF 0.0001   0.004
-double reg = 0.05;    //LF 0.04	0.005
-int block_s = 1024;     //block
-int thread_size = 1024;
+int r = 16;
+double lr = 0.005;   //LF 0.0001   0.004
+double reg = 0.0005;    //LF 0.04	0.005
+int block_s = 2048;     //block
+int thread_size = 512;
 int flag_lockfree = 0;
 int flag_preproccess = 1;
-int parallel_sequence_size = 0; // 0: auto; >0: fixed blocks per parallel sequence
+int parallel_sequence_size = 8; // 0: auto; >0: fixed blocks per parallel sequence
 int requested_gpu_count = 4; // 0: all visible GPUs; >0: at most this many GPUs
 queue<double> num1;
 string dataset_name = "tensor";
