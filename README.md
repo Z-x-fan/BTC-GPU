@@ -1,4 +1,4 @@
-# BTC-GPU Quick Start
+# BTC-GPU
 
 BTC-GPU is a CUDA-based program for third-order sparse tensor decomposition. It uses adaptive blocking and parallel SGD to learn three factor matrices on one or multiple GPUs.
 
@@ -7,8 +7,7 @@ BTC-GPU is a CUDA-based program for third-order sparse tensor decomposition. It 
 - Linux or WSL
 - NVIDIA GPU and CUDA Toolkit
 - `g++` and GNU Make
-- Python 3 (optional, for data preparation and batch experiments)
-- 
+
 ## Build
 
 ```bash
