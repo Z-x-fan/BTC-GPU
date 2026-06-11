@@ -21,11 +21,12 @@
 
 using namespace std;
 
-void block_problem(double* data_initial, 
-	double* data_sampling,
+void block_problem(const T_node* train_entries,
+	int train_nnz,
+	const T_node* test_entries,
+	int test_nnz,
 	double* a,
 	double* b,
 	double* c,
-	int nnz,
 	double rate);
 #endif

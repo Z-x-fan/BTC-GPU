@@ -28,42 +28,9 @@
 using namespace std;
 
 
-void initial_t(T_node* t_block, double* t, int I, int J, int K, int nnz) {
-	int num = 0;
-
-	for (int m = 0; m < K; m++) {
-		for (int j = 0; j < J; j++) {
-			for (int i = 0; i < I; i++) {
-				if (t[i * J * K + j * K + m] > 0) {
-					t_block[num].x = i;
-					t_block[num].y = j;
-					t_block[num].z = m;
-					num++;
-				}
-			}
-		}
-	}
-	random_device rd;
-	mt19937 gen(rd());
-	uniform_real_distribution<> distribution(0, nnz * 0.6);
-	int random = distribution(gen);
-
-	int size = random;
-	for (int i = size; i < nnz; i++) {
-		uniform_real_distribution<> distribution(0, nnz);
-		int random = distribution(gen);
-		if (random < size) {
-			T_node tmp_t;
-			tmp_t.x = t_block[i].x;
-			tmp_t.y = t_block[i].y;
-			tmp_t.z = t_block[i].z;
-			t_block[i].x = t_block[random].x;
-			t_block[i].y = t_block[random].y;
-			t_block[i].z = t_block[random].z;
-			t_block[random].x = tmp_t.x;
-			t_block[random].y = tmp_t.y;
-			t_block[random].z = tmp_t.z;
-		}
+void initial_t(T_node* t_block, const T_node* train_entries, int nnz) {
+	for (int i = 0; i < nnz; i++) {
+		t_block[i] = train_entries[i];
 	}
 }
 
@@ -210,9 +177,7 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 		int id = BT->block;
 
 		if (Block[id].block_num < block_s) {
-			Block[id].t[Block[id].block_num].x = t[i].x;
-			Block[id].t[Block[id].block_num].y = t[i].y;
-			Block[id].t[Block[id].block_num].z = t[i].z;
+			Block[id].t[Block[id].block_num] = t[i];
 			Block[id].block_num++;
 		}
 		else {
@@ -249,15 +214,11 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 					for (int j = 0; j < Block[id].block_num; j++) {
 						vector<bool> xt = hx(end_x, start, g_x, Block[id].t[j].x);
 						if (xt.back() == 0) {
-							t1[num_1].x = Block[id].t[j].x;
-							t1[num_1].y = Block[id].t[j].y;
-							t1[num_1].z = Block[id].t[j].z;
+							t1[num_1] = Block[id].t[j];
 							num_1++;
 						}
 						else {
-							t2[num_2].x = Block[id].t[j].x;
-							t2[num_2].y = Block[id].t[j].y;
-							t2[num_2].z = Block[id].t[j].z;
+							t2[num_2] = Block[id].t[j];
 							num_2++;
 						}					
 					}
@@ -265,15 +226,11 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 					if (num_1 < block_s && num_2 < block_s) {
 						flag = 1;
 						if (xt.back() == 0) {
-							t1[num_1].x = t[i].x;
-							t1[num_1].y = t[i].y;
-							t1[num_1].z = t[i].z;
+							t1[num_1] = t[i];
 							num_1++;
 						}
 						else {
-							t2[num_2].x = t[i].x;
-							t2[num_2].y = t[i].y;
-							t2[num_2].z = t[i].z;
+							t2[num_2] = t[i];
 							num_2++;
 						}
 					}
@@ -327,15 +284,11 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 					for (int j = 0; j < Block[id].block_num; j++) {
 						vector<bool> yt = hx(end_y, start, g_y, Block[id].t[j].y);
 						if (yt.back() == 0) {
-							t1[num_1].x = Block[id].t[j].x;
-							t1[num_1].y = Block[id].t[j].y;
-							t1[num_1].z = Block[id].t[j].z;
+							t1[num_1] = Block[id].t[j];
 							num_1++;
 						}
 						else {
-							t2[num_2].x = Block[id].t[j].x;
-							t2[num_2].y = Block[id].t[j].y;
-							t2[num_2].z = Block[id].t[j].z;
+							t2[num_2] = Block[id].t[j];
 							num_2++;
 						}						                  
 					}
@@ -343,15 +296,11 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 					if (num_1 < block_s && num_2 < block_s) {
 						flag = 1;
 						if (yt.back() == 0) {
-							t1[num_1].x = t[i].x;
-							t1[num_1].y = t[i].y;
-							t1[num_1].z = t[i].z;
+							t1[num_1] = t[i];
 							num_1++;
 						}
 						else {
-							t2[num_2].x = t[i].x;
-							t2[num_2].y = t[i].y;
-							t2[num_2].z = t[i].z;
+							t2[num_2] = t[i];
 							num_2++;
 						}
 					}
@@ -403,15 +352,11 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 					for (int j = 0; j < Block[id].block_num; j++) {
 						vector<bool> zt = hx(end_z, start, g_z, Block[id].t[j].z);
 						if (zt.back() == 0) {
-							t1[num_1].x = Block[id].t[j].x;
-							t1[num_1].y = Block[id].t[j].y;
-							t1[num_1].z = Block[id].t[j].z;
+							t1[num_1] = Block[id].t[j];
 							num_1++;
 						}
 						else {
-							t2[num_2].x = Block[id].t[j].x;
-							t2[num_2].y = Block[id].t[j].y;
-							t2[num_2].z = Block[id].t[j].z;
+							t2[num_2] = Block[id].t[j];
 							num_2++;
 						}
 					}
@@ -419,15 +364,11 @@ int tensor_block(BS_node* Block, T_node* t, int nnz, int I, int J, int K, BTnode
 					if (num_1 < block_s && num_2 < block_s) {
 						flag = 1;
 						if (zt.back() == 0) {
-							t1[num_1].x = t[i].x;
-							t1[num_1].y = t[i].y;
-							t1[num_1].z = t[i].z;
+							t1[num_1] = t[i];
 							num_1++;
 						}
 						else {
-							t2[num_2].x = t[i].x;
-							t2[num_2].y = t[i].y;
-							t2[num_2].z = t[i].z;
+							t2[num_2] = t[i];
 							num_2++;
 						}
 					}
@@ -564,6 +505,7 @@ void update_conflict_weights(Node_conflict* B_conf, const vector<int>& block_ids
 		for (int i = 0; i < n; i++) {
 			int root = find_parent(parent, i);
 			int block_count = Block[block_ids[i]].block_num > 0 ? Block[block_ids[i]].block_num : 1;
+			//double weight = conflict_sum[root] > 0 ? (double)block_count / conflict_sum[root] : 1.0;
 			double weight = conflict_sum[root] > 0 ? (double)block_count / conflict_sum[root] : 1.0;
 			set_axis_weight(B_conf, block_ids[i], axis, weight);
 		}
@@ -764,10 +706,53 @@ int count_scheduled_blocks(Parallel* head) {
 	return count;
 }
 
+struct ParallelStats {
+	int sequence_count;
+	int min_sequence_size;
+	int max_sequence_size;
+	int scheduled_blocks;
+	int unique_blocks;
+};
+
+ParallelStats conflict_free_parallel_stats = {0, 0, 0, 0, 0};
+ParallelStats after_conflict_parallel_stats = {0, 0, 0, 0, 0};
+int report_target_gpu_blocks = 0;
+
+ParallelStats get_parallel_stats(Parallel* head) {
+	ParallelStats stats = {0, 0, 0, 0, 0};
+	set<int> unique_blocks;
+	Parallel* node = head;
+	while (node != NULL && node->next != NULL) {
+		node = node->next;
+		int sequence_size = node->L.size();
+		if (sequence_size == 0) {
+			continue;
+		}
+
+		stats.sequence_count++;
+		stats.scheduled_blocks += sequence_size;
+		if (stats.min_sequence_size == 0 || sequence_size < stats.min_sequence_size) {
+			stats.min_sequence_size = sequence_size;
+		}
+		if (sequence_size > stats.max_sequence_size) {
+			stats.max_sequence_size = sequence_size;
+		}
+		for (list<int>::iterator it = node->L.begin(); it != node->L.end(); it++) {
+			unique_blocks.insert(*it);
+		}
+	}
+	stats.unique_blocks = unique_blocks.size();
+	return stats;
+}
+
 string rate_output_dir(double rate) {
 	stringstream ss;
 	ss << rate;
-	return string("output/AbileneTM_Tensor_") + ss.str() + "/";
+	string dir = output_root;
+	if (!dir.empty() && dir[dir.size() - 1] != '/' && dir[dir.size() - 1] != '\\') {
+		dir += "/";
+	}
+	return dir + dataset_name + "_" + ss.str() + "/";
 }
 
 void ensure_output_dir(const string& dir) {
@@ -876,6 +861,17 @@ void write_block_parallel_report(BS_node* Block, int block_num, Parallel* head, 
 	ofs << "# scheduled_blocks " << scheduled_blocks << endl;
 	ofs << "# unique_scheduled_blocks " << unique_scheduled_blocks.size() << endl;
 	ofs << "# max_sequence_size " << max_sequence_size << endl;
+	ofs << "# target_gpu_blocks " << report_target_gpu_blocks << endl;
+	ofs << "# conflict_free_sequence_count " << conflict_free_parallel_stats.sequence_count << endl;
+	ofs << "# conflict_free_min_parallel_blocks " << conflict_free_parallel_stats.min_sequence_size << endl;
+	ofs << "# conflict_free_max_parallel_blocks " << conflict_free_parallel_stats.max_sequence_size << endl;
+	ofs << "# conflict_free_scheduled_blocks " << conflict_free_parallel_stats.scheduled_blocks << endl;
+	ofs << "# conflict_free_unique_blocks " << conflict_free_parallel_stats.unique_blocks << endl;
+	ofs << "# after_conflict_sequence_count " << after_conflict_parallel_stats.sequence_count << endl;
+	ofs << "# after_conflict_min_parallel_blocks " << after_conflict_parallel_stats.min_sequence_size << endl;
+	ofs << "# after_conflict_max_parallel_blocks " << after_conflict_parallel_stats.max_sequence_size << endl;
+	ofs << "# after_conflict_scheduled_blocks " << after_conflict_parallel_stats.scheduled_blocks << endl;
+	ofs << "# after_conflict_unique_blocks " << after_conflict_parallel_stats.unique_blocks << endl;
 	ofs << endl;
 
 	ofs << "[blocks]" << endl;
@@ -1044,7 +1040,6 @@ Parallel* search_parallel_block_Tree(BS_node* Block, Node_conflict* B_conf, int 
 
 	set<int> block_id;
 		
-	srand(static_cast<unsigned int>(time(nullptr)));
 	for (int i = 0; i < block_num; i++) {
 		if (Block[i].block_num != 0) {
 			block_id.insert(i);
@@ -1055,7 +1050,6 @@ Parallel* search_parallel_block_Tree(BS_node* Block, Node_conflict* B_conf, int 
 		set<int> block_parallel;
 
 		auto it = block_id.begin();
-		advance(it, rand() % block_id.size());   //���ѡȡblock_id
 		int selected = *it;
 		block_id.erase(selected);
 
@@ -1095,7 +1089,6 @@ Parallel* search_parallel_block_Tree(BS_node* Block, Node_conflict* B_conf, int 
 			
 			while (block_parallel.size() != 0) {
 				auto it_p = block_parallel.begin();
-				advance(it_p, rand() % block_parallel.size());   //���ѡȡblock_id
 				selected = *it_p;
 				if (Block[selected].block_num != 0) {
 					Parallel_list->L.push_back(selected);
@@ -1131,7 +1124,9 @@ Parallel* search_parallel_block_Tree(BS_node* Block, Node_conflict* B_conf, int 
 		}
 	}
 
+	conflict_free_parallel_stats = get_parallel_stats(Parallel_head);
 	int target_gpu_blocks = configured_gpu_block_target(max_parallel, block_num);
+	report_target_gpu_blocks = target_gpu_blocks;
 	cout << "max_parallel=" << max_parallel << " target_gpu_blocks=" << target_gpu_blocks;
 	if (parallel_sequence_size > 0) {
 		cout << " configured_parallel_sequence_size=" << parallel_sequence_size;
@@ -1147,6 +1142,7 @@ Parallel* search_parallel_block_Tree(BS_node* Block, Node_conflict* B_conf, int 
 			update_conflict_weights(B_conf, Parallel_list, Block);
 		}
 	}
+	after_conflict_parallel_stats = get_parallel_stats(Parallel_head);
 
 	return Parallel_head;
 }
@@ -1166,15 +1162,10 @@ int Preproccess_list(Parallel* P, BS_node* Block, Node_conflict* B_conf, b_node*
     	for (auto it = P->L.begin(); it != P->L.end(); ++it) {
 
 			int block_count = Block[*it].block_num;
-			std::vector<int> indices(block_count);
-			for (int i = 0; i < block_count; ++i) {
-				indices[i] = i;
-			}
-			unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-			std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
 			bs[count].x = new int[block_count];
 			bs[count].y = new int[block_count];
 			bs[count].z = new int[block_count];
+			bs[count].rate = new double[block_count];
 			bs[count].block_num = Block[*it].block_num;
 			bs[count].id = *it;
 			bs[count].coe_x = B_conf[*it].coe_x;
@@ -1182,10 +1173,10 @@ int Preproccess_list(Parallel* P, BS_node* Block, Node_conflict* B_conf, b_node*
 			bs[count].coe_z = B_conf[*it].coe_z;
 			
 			for (int i = 0; i < Block[*it].block_num; ++i) {
-				int idx = indices[i];
-				bs[count].x[idx] = Block[*it].t[i].x;
-				bs[count].y[idx] = Block[*it].t[i].y;
-				bs[count].z[idx] = Block[*it].t[i].z;
+				bs[count].x[i] = Block[*it].t[i].x;
+				bs[count].y[i] = Block[*it].t[i].y;
+				bs[count].z[i] = Block[*it].t[i].z;
+				bs[count].rate[i] = Block[*it].t[i].rate;
 				
 			}
 			count++;
@@ -1199,7 +1190,7 @@ int Preproccess_list(Parallel* P, BS_node* Block, Node_conflict* B_conf, b_node*
 }
 
 //lock_freeԤ����
-void ToMatrix_LF(Parallel* P, BS_node* Block, double* t, LF_node* LF, int* num_LS, int I, int J, int K) {
+void ToMatrix_LF(Parallel* P, BS_node* Block, LF_node* LF, int* num_LS, int I, int J, int K) {
 	int count = 0;
 	int size = 0;
 	while (P->next != NULL) {
@@ -1212,7 +1203,7 @@ void ToMatrix_LF(Parallel* P, BS_node* Block, double* t, LF_node* LF, int* num_L
 				x_b = Block[*it].t[i].x;
 				y_b = Block[*it].t[i].y;
 				z_b = Block[*it].t[i].z;
-				LF[count].rate = t[x_b * J * K + y_b * K + z_b];
+				LF[count].rate = Block[*it].t[i].rate;
 				LF[count].x = x_b;
 				LF[count].y = y_b;
 				LF[count].z = z_b;
@@ -1240,15 +1231,16 @@ void initial_B(BS_node* Block) {
 
 
 void block_problem(
-	double* data_initial,
-	double* data_sampling,
+	const T_node* train_entries,
+	int train_nnz,
+	const T_node* test_entries,
+	int test_nnz,
 	double* a,
 	double* b,
 	double* c,
-	int nnz,
 	double rate) {
 
-	T_node* t_block = new T_node[nnz];
+	T_node* t_block = new T_node[train_nnz];
 	BS_node* Block;
 	Parallel* head;
 	Node_conflict* B_conf;
@@ -1261,12 +1253,12 @@ void block_problem(
 	BTnode* BT = new BTnode();
 	BTnode* BT_head = BT;
 	
-	Block = new BS_node[nnz];    
+	Block = new BS_node[train_nnz > 0 ? train_nnz : 1];    
 
 	initial_B(Block);
-	initial_t(t_block, data_sampling, I, J, K, nnz);
+	initial_t(t_block, train_entries, train_nnz);
 	
-	num_block = tensor_block(Block, t_block, nnz, I, J, K, BT, BT_head);          
+	num_block = tensor_block(Block, t_block, train_nnz, I, J, K, BT, BT_head);          
 	
 	BT = BT_head;
 	B_conf = new Node_conflict[num_block];
@@ -1286,10 +1278,10 @@ void block_problem(
 	}
 
 	if (flag_lockfree == 1) {
-		LF = new LF_node[nnz];
+		LF = new LF_node[train_nnz];
 		num_LF = new int[num_parallel];
-		ToMatrix_LF(head, Block, data_sampling, LF, num_LF, I, J, K);
+		ToMatrix_LF(head, Block, LF, num_LF, I, J, K);
 	}
-	sgd_train(data_initial, data_sampling, a, b, c, num_parallel, max_parallel, LF, num_LF, nnz, rate, num_bs, bs, scheduled_bs);
+	sgd_train(train_entries, train_nnz, test_entries, test_nnz, a, b, c, num_parallel, max_parallel, LF, num_LF, rate, num_bs, bs, scheduled_bs);
 
 }

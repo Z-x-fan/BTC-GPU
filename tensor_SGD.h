@@ -18,6 +18,7 @@
 #include<ctime>
 #include <random>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -34,7 +35,11 @@ extern int thread_size;
 extern int flag_lockfree;
 extern int flag_preproccess;
 extern int parallel_sequence_size;
+extern int requested_gpu_count;
 extern queue<double> num1;
+extern string dataset_name;
+extern string output_root;
+extern double train_rate;
 
 struct BTnode{
 	vector<bool> x, y, z;
@@ -46,6 +51,7 @@ struct BTnode{
 
 struct T_node{
 	int x, y, z;
+	double rate;
 };
 
 
@@ -76,6 +82,7 @@ struct b_node {
 	int *x;
 	int *y;
 	int *z;
+	double* rate;
 	int block_num;
 	int id;
 	double coe_x;
@@ -91,6 +98,6 @@ struct LF_node{
 	double coe_z;
 };
 
-void tensor_SGD(double* data_initial);
+void tensor_SGD(const vector<T_node>& train_entries, const vector<T_node>& test_entries);
 
 #endif
